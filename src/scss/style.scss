@@ -1,0 +1,17 @@
+$lightGray: #F2F2F2;
+
+body {
+  background-color: $lightGray;
+}
+
+login {
+  height: 100%;
+
+  & .grid {
+    height: 100%;
+  }
+
+  & .column {
+    max-width: 640px;
+  }
+}

@@ -1,0 +1,12 @@
+.DS_Store
+node_modules
+*.lock
+
+# Build Results
+_dist/
+
+# Test
+.coverage
+test/xunit.xml
+test/.logs/*
+!test/.logs/.gitkeep

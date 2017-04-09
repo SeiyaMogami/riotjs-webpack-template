@@ -1,0 +1,12 @@
+{
+  "userPool": {
+    "userPoolId": "ap-northeast-1_xUuVcH9XZ",
+    "clientId": "7jsfcnnbjpaobtpiobmd305r6s",
+    "identityPoolId": "ap-northeast-1:a329ac02-4a76-4a81-ad9a-46ba64aca3cb",
+    "region": "ap-northeast-1"
+  },
+  "apigw": {
+    "url": "https://tf4r57hgc4.execute-api.ap-northeast-1.amazonaws.com/dev",
+    "region": "ap-northeast-1"
+  }
+}

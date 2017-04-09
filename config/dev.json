@@ -1,0 +1,7 @@
+{
+  "s3": {
+    "accessKeyId": "your key",
+    "secretAccessKey": "your key",
+    "bucketName": "your bucket name"
+  }
+}
