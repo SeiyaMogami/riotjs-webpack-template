@@ -4,11 +4,13 @@ const gulp = require('gulp');
 const gutil = require('gulp-util');
 const sequence = require('run-sequence');
 const yargs = require('yargs').argv;
-let destPath;
+
+let gulpConfig;
 
 gulp.task('load-config', (done) => {
   process.env.NODE_ENV = yargs.env || 'dev';
-  destPath = `./_dist/${process.env.NODE_ENV}`;
+  gulpConfig = require(`./gulpConfig/${process.env.NODE_ENV}.json`);
+  gulpConfig.destPath = `./_dist/${process.env.NODE_ENV}`;
   done();
 });
 
@@ -18,27 +20,29 @@ gulp.task('load-config', (done) => {
 
 const del = require('del');
 const sass = require('gulp-sass');
+const cleanCSS = require('gulp-clean-css');
 const webpack = require('gulp-webpack');
 
 gulp.task('clean-dest', (done) =>
-  del([destPath], done)
+  del([gulpConfig.destPath], done)
 );
 
 gulp.task('scss', () =>
   gulp.src('./src/scss/*.scss')
   .pipe(sass().on('error', sass.logError))
-  .pipe(gulp.dest(`${destPath}/css`))
+  .pipe(cleanCSS())
+  .pipe(gulp.dest(`${gulpConfig.destPath}/css`))
 );
 
 gulp.task('copy', () =>
   gulp.src('./src/static/**')
-  .pipe(gulp.dest(destPath))
+  .pipe(gulp.dest(gulpConfig.destPath))
 );
 
 gulp.task('webpack', function() {
   return gulp.src('')
     .pipe(webpack(require('./webpack.config.js')))
-    .pipe(gulp.dest(destPath));
+    .pipe(gulp.dest(gulpConfig.destPath));
 });
 
 gulp.task('build', (done) =>
@@ -50,16 +54,15 @@ gulp.task('build', (done) =>
 ////////////////////
 
 gulp.task('upload-s3', (done) => {
-  const config = require(`./config/${process.env.NODE_ENV}.json`);
   const s3 = require('gulp-s3-upload')({
-    accessKeyId: config.s3.accessKeyId,
-    secretAccessKey: config.s3.secretAccessKey
+    accessKeyId: gulpConfig.s3.accessKeyId,
+    secretAccessKey: gulpConfig.s3.secretAccessKey
   });
   const settings = {
-    Bucket: config.s3.bucketName,
+    Bucket: gulpConfig.s3.bucketName,
     ACL: 'public-read'
   };
-  return gulp.src(`${destPath}/**`)
+  return gulp.src(`${gulpConfig.destPath}/**`)
     .pipe(s3(settings), done);
 });
 
@@ -85,20 +88,20 @@ gulp.task('coverage-setting', () =>
 );
 
 gulp.task('test', ['clean-test', 'coverage-setting'], () => {
-  process.chdir('test');
   let testError;
+  process.chdir('test');
   return gulp.src(['**/*.test.js', '!node_modules/**/*.js'], {
       read: false
     })
     .pipe(mocha({
-        reporter: 'xunit-file',
+        reporter: 'spec',
         timeout: '5000'
       })
       .on('error', function(err) {
         testError = err;
         this.emit('end');
       }))
-    .pipe(istanbul.writeReports('.coverage'))
+    .pipe(istanbul.writeReports('test/.coverage/it'))
     .pipe(istanbul.enforceThresholds({
       thresholds: {
         global: 70
