@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "config": "^1.24.0",
+    "config": "^1.24.0"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
@@ -15,6 +15,7 @@
     "eslint": "^3.19.0",
     "eslint-plugin-html": "^2.0.0",
     "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.4.1",
     "gulp-istanbul": "^1.1.1",
     "gulp-mocha": "^3.0.1",
     "gulp-s3-upload": "^1.6.4",
